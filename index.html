@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Foto- en videopresentatie</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: black;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Startscherm vult het volledige venster */
+        #startscherm {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #18251b;
+        }
+
+        /* Startknop met afbeelding en tekst */
+        #startKnop {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 24px;
+            background: #29452f;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        #startKnop:hover {
+            background: #3b6343;
+            transform: scale(1.04);
+        }
+
+        #startKnop img {
+            display: block;
+            width: min(320px, 65vw);
+            height: min(220px, 40vh);
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        /* Presentatie vult het volledige venster */
+        #presentatie {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background: black;
+        }
+
+        #foto, #video {
+            display: none;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Startscherm -->
+    <div id="startscherm">
+        <button id="startKnop" type="button">
+            <span>Reünie StayOk 2026</span>
+            <img src="./content/start.jpg" alt="">
+            <span>Start presentatie</span>
+        </button>
+    </div>
+
+    <!-- Presentatiescherm -->
+    <div id="presentatie">
+        <img id="foto" alt="Presentatiefoto">
+
+        <video id="video" controls playsinline>
+            Je browser ondersteunt geen HTML-video.
+        </video>
+    </div>
+
+    <script>
+        // Bestanden die achter elkaar getoond worden
+        const images = [
+            "./content/2007 (1).JPG",
+            "./content/2007 (2).JPG",
+            "./content/2007 (3).JPG",
+            "./content/2007 (4).JPG",
+            "./content/2007 (5).JPG",
+            "./content/2007 (6).JPG",
+            "./content/2007 (7).JPG",
+            "./content/2007 (8).JPG",
+            "./content/2007 (9).JPG",
+            "./content/2007 (10).JPG",
+            "./content/2007 (11).JPG",
+            "./content/2007 (12).JPG",
+            "./content/2007 (13).JPG",
+            "./content/2007 (14).JPG",
+            "./content/2007 (15).JPG",
+            "./content/2007 (16).JPG",
+            "./content/2007 (17).JPG",
+            "./content/2007 (18).JPG",
+            "./content/2007 (19).JPG",
+            "./content/2007 (20).JPG",
+            "./content/2007 (21).JPG",
+            "./content/2007 (22).JPG",
+            "./content/2007 (23).JPG",
+            "./content/2007 (24).JPG",
+            "./content/2007 (25).JPG",
+            "./content/2007 (26).JPG",
+            "./content/2007 (27).JPG",
+            "./content/2007 (28).JPG",
+            "./content/2007 (29).JPG",
+            "./content/2007 (30).JPG",
+            "./content/2007 (31).JPG",
+            "./content/2007 (32).JPG",
+            "./content/2007 (33).JPG",
+            "./content/2007 (34).JPG",
+            "./content/2007 (35).JPG",
+
+            "./content/2008 (1).JPG",
+            "./content/2008 (2).JPG",
+            "./content/2008 (3).JPG",
+            "./content/2008 (4).JPG",
+            "./content/2008 (5).JPG",
+            "./content/2008 (6).JPG",
+            "./content/2008 (7).JPG",
+            "./content/2008 (8).JPG",
+            "./content/2008 (9).JPG",
+
+            "./content/2009 (1).JPG",
+            "./content/2009 (2).JPG",
+            "./content/2009 (3).JPG",
+            "./content/2009 (4).JPG",
+            "./content/2009 (5).JPG",
+            "./content/2009 (6).JPG",
+            "./content/2009 (7).JPG",
+            "./content/2009 (8).JPG",
+            "./content/2009 (9).JPG",
+            "./content/2009 (10).JPG",
+            "./content/2009 (11).JPG",
+            "./content/2009 (12).JPG",
+            "./content/2009 (13).JPG",
+            "./content/2009 (14).JPG",
+            "./content/2009 (15).JPG",
+            "./content/2009 (16).JPG",
+            "./content/2009 (17).JPG",
+            "./content/2009 (18).JPG",
+            "./content/2009 (19).JPG",
+            "./content/2009 (20).JPG",
+            "./content/2009 (21).JPG",
+            "./content/2009 (22).JPG",
+            "./content/2009 (23).JPG",
+            "./content/2009 (24).JPG",
+            "./content/2009 (25).JPG",
+            "./content/2009 (26).JPG",
+
+            "./content/2011 (1).jpg",
+            "./content/2011 (2).JPG",
+            "./content/2011 (3).JPG",
+            "./content/2011 (4).JPG",
+            "./content/2011 (5).JPG",
+            "./content/2011 (6).JPG",
+            "./content/2011 (7).JPG",
+            "./content/2011 (8).JPG",
+            "./content/2011 (9).JPG",
+            "./content/2011 (10).JPG",
+            "./content/2011 (11).JPG",
+            "./content/2011 (12).JPG",
+            "./content/2011 (13).JPG",
+            "./content/2011 (14).JPG",
+            "./content/2011 (15).JPG",
+            "./content/2011 (16).JPG",
+            "./content/2011 (17).JPG",
+            "./content/2011 (18).JPG",
+            "./content/2011 (19).JPG",
+            "./content/2011 (20).JPG",
+            "./content/2011 (21).JPG",
+            "./content/2011 (22).JPG",
+            "./content/2011 (23).JPG",
+            "./content/2011 (24).JPG",
+            "./content/2011 (25).JPG",
+            "./content/2011 (26).JPG",
+            "./content/2011 (27).JPG",
+            "./content/2011 (28).JPG",
+            "./content/2011 (29).JPG",
+            "./content/2011 (30).JPG",
+            "./content/2011 (31).JPG",
+            "./content/2011 (32).JPG",
+            "./content/2011 (33).JPG",
+            "./content/2011 (34).JPG",
+            "./content/2011 (35).JPG",
+            "./content/2011 (36).JPG",
+            "./content/2011 (37).JPG",
+            "./content/2011 (38).JPG",
+            "./content/2011 (39).JPG",
+            "./content/2011 (40).JPG",
+            "./content/2011 (41).JPG",
+            "./content/2011 (42).JPG",
+            "./content/2011 (43).JPG",
+
+            "./content/2014 (1).jpg",
+            "./content/2014 (2).JPG",
+            "./content/2014 (3).jpg",
+            "./content/2014 (4).jpg",
+            "./content/2014 (5).jpg",
+            "./content/2014 (6).jpg",
+            "./content/2014 (7).jpg",
+            "./content/2014 (8).jpg",
+            "./content/2014 (9).jpg",
+            "./content/2014 (10).jpg",
+            "./content/2014 (11).jpg",
+            "./content/2014 (12).jpg",
+            "./content/2014 (13).jpg",
+            "./content/2014 (14).jpg",
+            "./content/2014 (15).jpg",
+            "./content/2014 (16).jpg",
+            "./content/2014 (17).jpg",
+            "./content/2014 (18).jpg",
+            "./content/2014 (19).jpg",
+
+            "./content/2018 (1).jpg",
+
+            "./content/BOZ-2007.mp4",
+            "./content/SOEST-2009.mp4"
+        ];
+
+        // Instellingen
+        const fotoInterval = 3000;
+
+        let index = 0;
+        let timer = null;
+
+        const startscherm = document.getElementById("startscherm");
+        const startKnop = document.getElementById("startKnop");
+        const presentatie = document.getElementById("presentatie");
+        const foto = document.getElementById("foto");
+        const video = document.getElementById("video");
+
+        // Start na een klik van de gebruiker
+        startKnop.addEventListener("click", function () {
+            startscherm.style.display = "none";
+            presentatie.style.display = "flex";
+
+// Ga naar het volgende bestand bij een toetsaanslag
+document.addEventListener("keydown", function (event) {
+    if (presentatie.style.display === "none") return;
+
+    // Negeer toetsen die voor de videobediening worden gebruikt
+    if (event.code === "Space" || event.code === "ArrowLeft" ||
+        event.code === "ArrowRight") {
+        return;
+    }
+
+    gaNaarVolgendBestand();
+});
+
+// Ga naar het volgende bestand bij een tik op het scherm
+presentatie.addEventListener("click", function (event) {
+    if (presentatie.style.display === "none") return;
+
+    // Klikken op de videobediening niet onderscheppen
+    if (event.target === video) return;
+
+    gaNaarVolgendBestand();
+});
+
+            index = 0;
+            toonVolgendBestand();
+
+
+        });
+
+
+// Ga naar het volgende bestand
+function gaNaarVolgendBestand() {
+    clearTimeout(timer);
+
+    // Stop een eventuele video
+    video.pause();
+
+    // Ruim de huidige video op en ga verder
+    toonVolgendBestand();
+}
+
+
+
+
+
+        // Toon het volgende bestand
+        function toonVolgendBestand() {
+            clearTimeout(timer);
+
+            // Opnieuw beginnen na het laatste bestand
+            if (index >= images.length) {
+                index = 0;
+            }
+
+            const bestand = images[index];
+            index++;
+
+            if (/\.mp4$/i.test(bestand)) {
+                // Video afspelen
+                foto.style.display = "none";
+                video.style.display = "block";
+
+                video.onended = function () {
+                    toonVolgendBestand();
+                };
+
+                video.onerror = function () {
+                    console.error("Video kan niet worden geladen:", bestand);
+                    toonVolgendBestand();
+                };
+
+                video.src = bestand;
+                video.currentTime = 0;
+                video.load();
+
+                // Probeer de video met geluid af te spelen
+                video.muted = false;
+
+                video.play().catch(function (error) {
+                    console.error("Video afspelen mislukt:", error);
+                });
+
+            } else {
+                // Foto tonen
+                video.pause();
+                video.onended = null;
+                video.onerror = null;
+                video.removeAttribute("src");
+                video.load();
+                video.style.display = "none";
+
+                foto.style.display = "block";
+
+                foto.onload = function () {
+                    timer = setTimeout(
+                        toonVolgendBestand,
+                        fotoInterval
+                    );
+                };
+
+                foto.onerror = function () {
+                    console.error("Foto kan niet worden geladen:", bestand);
+                    toonVolgendBestand();
+                };
+
+                foto.src = bestand;
+            }
+        }
+    </script>
+
+</body>
+</html>
